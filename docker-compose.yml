@@ -1,0 +1,26 @@
+version: '3.8' # Adjust version if needed 
+
+services:
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    pull_policy: always
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+    restart: unless-stopped
+
+  django:
+    build: ./app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_API_URL=http://ollama:11434  
+    volumes:
+      - ./app:/app
+
+volumes:
+  ollama: 
